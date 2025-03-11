@@ -118,10 +118,10 @@
 
 
 .sidebar-container {
-  position: relative; /* Ensure the sidebar is positioned relative to this container */
-  top: 100px; /* Adjust this value to push the sidebar down */
-  height: calc(100vh - 100px); /* Adjust height to fit the remaining viewport */
-  overflow-y: auto; /* Add scroll if content overflows */
+  position: relative;
+  top: 100px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 
