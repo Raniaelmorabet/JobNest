@@ -165,6 +165,7 @@ export default function AuthUI() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.log(response)
         throw new Error(errorData.message || "Login failed");
       }
 
