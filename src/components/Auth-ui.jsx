@@ -162,10 +162,9 @@ export default function AuthUI() {
           password: loginData.password,
         }),
       });
-
+      console.log(response)
       if (!response.ok) {
         const errorData = await response.json();
-        console.log(response)
         throw new Error(errorData.message || "Login failed");
       }
 
