@@ -3,7 +3,6 @@ import { Button } from "../components/ui/button.jsx";
 import { Card } from "../components/ui/card";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext.jsx";
 
 export default function ValidationModal({ onClose }) {
   const userInfo = JSON.parse(localStorage.getItem("user") || "{}");
