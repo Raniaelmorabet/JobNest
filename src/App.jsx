@@ -6,10 +6,11 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import JobDetail from "./pages/JobDetail";
-import EmployerDashboard from "./pages/EmployerDashboard";
+// import EmployerDashboard from "./pages/EmployerDashboard";
 import Auth from "./pages/Auth";
 import DashboardPage from "./pages/DashboardPage";
 import JobDetailsEmployer from "./components/JobDetailsEmployer";
+import Error from "@/components/Error.jsx";
 
 function App() {
   const location = useLocation();
@@ -42,8 +43,9 @@ function App() {
       <Header />
       <main className="flex-grow">
         <Routes>
-          <Route index path="/auth" element={<Auth />} />
-          <Route
+          <Route path="/auth" element={<Auth />}/>
+            <Route path="*" element={<Error />} />
+            <Route
             path="/"
             element={
               <ProtectedAdmin>
