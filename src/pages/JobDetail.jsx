@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { ApplicationForm } from "../components/ApplicationForm.jsx";
+import { ApplicationForm } from "../components/ApplicationForm";
 import { Loader } from "../components/ui/loader";
 import ReactMarkdown from "react-markdown";
 
@@ -50,7 +50,9 @@ export default function JobDetail() {
   }, [id]);
 
   // Filter out the main job from related jobs
-  const filteredRelatedJobs = relatedJobs.filter((job) => job.id.toString() !== id);
+  const filteredRelatedJobs = relatedJobs.filter(
+      (job) => job.id.toString() !== id
+  );
 
   // Function to extract specific sections from the description
   const extractSections = (description) => {
@@ -115,8 +117,7 @@ export default function JobDetail() {
   // Extract the required sections from the description
   const { description, responsibilities, keySkills, howToApply } =
       extractSections(selectedJob.description);
-      console.log(selectedJob);
-      
+
 
   return (
       <div className="min-h-screen bg-gray-50 pt-24">
@@ -147,35 +148,62 @@ export default function JobDetail() {
                               <div className="flex items-start justify-between">
                                 <div className="flex gap-3">
                                   <img
-                                      src={job.picture || "/placeholder.svg"}
-                                      alt={job.company}
-                                      className="h-10 w-10 rounded object-cover"
+                                      src={
+                                        job?.picture
+                                            ? job.picture
+                                                .replace("image/upload/", "")
+                                                .includes(".")
+                                                ? job.picture.replace("image/upload/", "")
+                                                : `${job.picture.replace(
+                                                    "image/upload/",
+                                                    ""
+                                                )}.png`
+                                            : "/placeholder.svg"
+                                      }
+                                      alt={job.title}
+                                      className="h-16 w-16 rounded-lg object-cover"
                                   />
                                   <div>
-                                    <h3 className="font-semibold text-lg">{job.title}</h3>
+                                    <h3 className="font-semibold text-lg">
+                                      {job.title}
+                                    </h3>
                                     <p className="text-sm text-gray-500">
-                                      {job.company} • {job.no_of_applicants} Applicants
+                                      {job.company} • {job.no_of_applicants}{" "}
+                                      Applicants
                                     </p>
                                   </div>
                                 </div>
                               </div>
                               <div className="flex flex-wrap gap-2 ">
-                                {
-                                  selectedJob.type.map((type, index) => (
-                                    <Badge key={index} variant="secondary" className={"bg-transparent py-0 px-0"}>
+                                {selectedJob.type.map((type, index) => (
+                                    <Badge
+                                        key={index}
+                                        variant="secondary"
+                                        className={"bg-transparent py-0 px-0"}
+                                    >
                                       {type === "full-time" ? (
-                                        <span className="bg-green-100 text-green-700 px-3 py-[2px] rounded-sm">Full Time</span>
+                                          <span className="bg-green-100 text-green-700 px-3 py-[2px] rounded-sm">
+                                  Full Time
+                                </span>
                                       ) : type === "part-time" ? (
-                                        <span className="bg-orange-100 text-orange-700 px-3 py-[2px] rounded-sm">Part Time</span>
+                                          <span className="bg-orange-100 text-orange-700 px-3 py-[2px] rounded-sm">
+                                  Part Time
+                                </span>
                                       ) : type === "contract" ? (
-                                        <span className="bg-purple-100 text-purple-600 px-3 py-[2px] rounded-sm">Contract</span>
+                                          <span className="bg-purple-100 text-purple-600 px-3 py-[2px] rounded-sm">
+                                  Contract
+                                </span>
                                       ) : (
-                                        <span className="bg-gray-100 text-gray-700 px-3 py-[2px] rounded-sm">{type}</span>
+                                          <span className="bg-gray-100 text-gray-700 px-3 py-[2px] rounded-sm">
+                                  {type}
+                                </span>
                                       )}
                                     </Badge>
                                 ))}
                               </div>
-                              <p className="text-sm text-gray-600 line-clamp-2">{job.description}</p>
+                              <p className="text-sm text-gray-600 line-clamp-2">
+                                {job.description}
+                              </p>
                               <div className="flex items-center justify-between pt-2">
                                 <div className="font-semibold">${job.wage}</div>
                                 <div className="text-sm text-gray-500 flex items-center gap-1">
@@ -206,27 +234,38 @@ export default function JobDetail() {
                     <div className="flex items-center gap-2 text-gray-500">
                       <img
                           src={selectedJob.picture || "/placeholder.svg"}
-                          alt={selectedJob.company}
+                          alt={selectedJob.title}
                           className="size-8 rounded-full object-cover"
                       />
                       <span>{selectedJob.company}</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-4 sm:mt-0">
-                  {
-                    selectedJob.type.map((type, index) => (
-                      <Badge key={index} variant="secondary" className={"bg-transparent py-0 px-0"}>
-                        {type === "full-time" ? (
-                          <span className="bg-green-100 text-green-700 px-3 py-[2px] rounded-sm">Full Time</span>
-                        ) : type === "part-time" ? (
-                          <span className="bg-orange-100 text-orange-700 px-3 py-[2px] rounded-sm">Part Time</span>
-                        ) : type === "contract" ? (
-                          <span className="bg-purple-100 text-purple-600 px-3 py-[2px] rounded-sm">Contract</span>
-                        ) : (
-                          <span className="bg-gray-100 text-gray-700 px-3 py-[2px] rounded-sm">{type}</span>
-                        )}
-                      </Badge>
-                  ))}
+                    {selectedJob.type.map((type, index) => (
+                        <Badge
+                            key={index}
+                            variant="secondary"
+                            className={"bg-transparent py-0 px-0"}
+                        >
+                          {type === "full-time" ? (
+                              <span className="bg-green-100 text-green-700 px-3 py-[2px] rounded-sm">
+                          Full Time
+                        </span>
+                          ) : type === "part-time" ? (
+                              <span className="bg-orange-100 text-orange-700 px-3 py-[2px] rounded-sm">
+                          Part Time
+                        </span>
+                          ) : type === "contract" ? (
+                              <span className="bg-purple-100 text-purple-600 px-3 py-[2px] rounded-sm">
+                          Contract
+                        </span>
+                          ) : (
+                              <span className="bg-gray-100 text-gray-700 px-3 py-[2px] rounded-sm">
+                          {type}
+                        </span>
+                          )}
+                        </Badge>
+                    ))}
                   </div>
                 </div>
 
@@ -235,7 +274,9 @@ export default function JobDetail() {
                   {/* Job Description */}
                   {selectedJob.description && (
                       <div>
-                        <h2 className="text-xl font-semibold mb-4">About the role</h2>
+                        <h2 className="text-xl font-semibold mb-4">
+                          About the role
+                        </h2>
                         {selectedJob.description}
                       </div>
                   )}
@@ -243,10 +284,15 @@ export default function JobDetail() {
                   {/* Responsibilities */}
                   {selectedJob.responsibilities && (
                       <div>
-                        <h2 className="text-xl font-semibold mb-4">Responsibilities</h2>
+                        <h2 className="text-xl font-semibold mb-4">
+                          Responsibilities
+                        </h2>
                         <ul className="space-y-4">
                           {selectedJob.responsibilities.map((item, index) => (
-                              <li key={index} className="text-gray-600 leading-relaxed">
+                              <li
+                                  key={index}
+                                  className="text-gray-600 leading-relaxed"
+                              >
                                 • {item}
                               </li>
                           ))}
@@ -257,7 +303,9 @@ export default function JobDetail() {
                   {/* Required Skills */}
                   {selectedJob.required_skills && (
                       <div>
-                        <h2 className="text-xl font-semibold mb-4">Required skills:</h2>
+                        <h2 className="text-xl font-semibold mb-4">
+                          Required skills:
+                        </h2>
                         <div className="flex flex-wrap gap-2">
                           {selectedJob.required_skills.map((skill, index) => (
                               <Badge
@@ -280,12 +328,25 @@ export default function JobDetail() {
               <Card className="p-6">
                 <div className="flex items-center gap-3">
                   <img
-                      src={selectedJob.picture || "/placeholder.svg"}
-                      alt={selectedJob.company}
-                      className="h-12 w-12 rounded-full object-cover"
+                      src={
+                        selectedJob?.picture
+                            ? selectedJob.picture
+                                .replace("image/upload/", "")
+                                .includes(".")
+                                ? selectedJob.picture.replace("image/upload/", "")
+                                : `${selectedJob.picture.replace(
+                                    "image/upload/",
+                                    ""
+                                )}.png`
+                            : "/placeholder.svg"
+                      }
+                      alt={selectedJob?.company}
+                      className="h-16 w-16 rounded-lg object-cover"
                   />
                   <div>
-                    <h2 className="text-xl font-semibold">{selectedJob.company}</h2>
+                    <h2 className="text-xl font-semibold">
+                      {selectedJob.company}
+                    </h2>
                   </div>
                 </div>
                 <h2 className="text-xl font-semibold mt-4">Job Overview</h2>
@@ -319,7 +380,9 @@ export default function JobDetail() {
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Location</h3>
+                    <h3 className="text-sm font-medium text-gray-500">
+                      Location
+                    </h3>
                     <p>{selectedJob.location}</p>
                   </div>
                   <div>
