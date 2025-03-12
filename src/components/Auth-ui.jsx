@@ -605,7 +605,6 @@ export default function AuthUI() {
                         <SelectContent>
                           <SelectItem value="user">Find a Job</SelectItem>
                           <SelectItem value="employer">Hire Talent</SelectItem>
-                          <SelectItem value="admin">Explore Opportunities</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
