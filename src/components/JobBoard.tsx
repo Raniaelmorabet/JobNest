@@ -1,23 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { JobFilters } from "./JobFilters";
 
-const JobBoard = () => {
+// Define the shape of a job object
+interface Job {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+    wage: string;
+    experience_level: string;
+    description: string;
+}
+
+// Define the shape of the filters object
+interface Filters {
+    category: string | null;
+    location: string | null;
+    experienceLevel: string | null;
+    search?: string;
+    page?: number;
+    page_size?: number;
+    type?: string;
+}
+
+const JobBoard = (): JSX.Element => {
     // State for filters
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<Filters>({
         category: null,
         location: null,
         experienceLevel: null,
     });
 
     // State for jobs
-    const [jobs, setJobs] = useState([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
 
     // Function to fetch jobs based on filters
-    const fetchJobs = async () => {
+    const fetchJobs = async (): Promise<void> => {
         const params = new URLSearchParams({
             search: filters.search || "",
-            page: filters.page || 1,
-            page_size: filters.page_size || 10,
+            page: filters.page?.toString() || "1",
+            page_size: filters.page_size?.toString() || "10",
             location: filters.location || "",
             type: filters.type || "",
             experience_level: filters.experienceLevel || "",
@@ -29,7 +51,7 @@ const JobBoard = () => {
                 `https://job-board-platform.onrender.com/api/job/categorized-jobs/?${params}`
             );
             const data = await response.json();
-            setJobs(data.results); 
+            setJobs(data.results);
         } catch (error) {
             console.error("Error fetching jobs:", error);
         }
