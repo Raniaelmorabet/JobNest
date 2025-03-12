@@ -5,16 +5,25 @@ import HeroImage from "../assets/HeroPageImage/heroPage.png";
 import Preloader from "../components/ui/Preloader";
 import { useNavigate } from "react-router-dom";
 
-export default function Home() {
-  const [filters, setFilters] = useState({
+interface Filters {
+  keyword: string;
+  location: string;
+}
+
+interface UserInfo {
+  role: string;
+}
+
+export default function Home(): JSX.Element {
+  const [filters, setFilters] = useState<Filters>({
     keyword: "",
     location: "",
   });
-  const userInfo = JSON.parse(localStorage.getItem("user"));
+  const userInfo: UserInfo | null = JSON.parse(localStorage.getItem("user") || "null");
   const navigate = useNavigate();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isFadingOut, setIsFadingOut] = useState(false);
-  const showIntro = localStorage.getItem("showIntro") === "true";
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
+  const showIntro: boolean = localStorage.getItem("showIntro") === "true";
 
   useEffect(() => {
     if (showIntro) {
@@ -30,10 +39,10 @@ export default function Home() {
       setIsLoaded(true);
       setIsFadingOut(true);
     }
-  }, []);
+  }, [showIntro]);
 
-  const handleSearch = (newFilters) => {
-    setFilters(newFilters); // Update filters state
+  const handleSearch = (newFilters: Filters): void => {
+    setFilters(newFilters);
   };
 
   return (
