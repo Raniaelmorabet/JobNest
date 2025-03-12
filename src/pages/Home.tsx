@@ -32,7 +32,7 @@ export default function Home(): JSX.Element {
         setTimeout(() => {
           setIsLoaded(true);
           localStorage.setItem("showIntro", "false");
-        }, 2000);
+        }, 9000);
       }, 1000);
       return () => clearTimeout(timer);
     } else {
