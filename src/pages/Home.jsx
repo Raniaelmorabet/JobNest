@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { SearchForm } from "../components/SearchForm.jsx";
-import { JobList } from "../components/JobList.jsx";
+import { SearchForm } from "../components/SearchForm";
+import { JobList } from "../components/JobList";
 import HeroImage from "../assets/HeroPageImage/heroPage.png";
-import Preloader from "../components/ui/Preloader.jsx";
+import Preloader from "../components/ui/Preloader";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
           setIsLoaded(true);
           localStorage.setItem("showIntro", "false");
         }, 2000);
-      }, 9000);
+      }, 1000);
       return () => clearTimeout(timer);
     } else {
       setIsLoaded(true);
@@ -33,24 +33,28 @@ export default function Home() {
   }, []);
 
   const handleSearch = (newFilters) => {
-    setFilters(newFilters);
+    setFilters(newFilters); // Update filters state
   };
 
   return (
       <>
         {!isLoaded && showIntro && (
-            <div className={`fixed inset-0 flex items-center justify-center bg-black z-50 transition-opacity duration-[2000ms] ease-out ${
-                isFadingOut ? "opacity-0" : "opacity-100"
-            }`}>
+            <div
+                className={`fixed inset-0 flex items-center justify-center bg-black z-50 transition-opacity duration-[2000ms] ease-out ${
+                    isFadingOut ? "opacity-0" : "opacity-100"
+                }`}
+            >
               <Preloader />
             </div>
         )}
 
-        <div className={`transition-opacity ${
-            userInfo?.role === "employer" && "bg-[#0A0A0A]"
-        } duration-[2000ms] ease-out ${
-            isFadingOut ? "opacity-100" : "opacity-0"
-        }`}>
+        <div
+            className={`transition-opacity ${
+                userInfo?.role === "employer" && "bg-[#0A0A0A]"
+            } duration-[2000ms] ease-out ${
+                isFadingOut ? "opacity-100" : "opacity-0"
+            }`}
+        >
           <div className="min-h-screen">
             <section className="relative text-white py-32 md:py-44">
               <div className="container relative z-10 px-4">
@@ -59,7 +63,8 @@ export default function Home() {
                     Discover Your Dream Career
                   </h1>
                   <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-                    Explore thousands of job opportunities with all the information <br />
+                    Explore thousands of job opportunities with all the information{" "}
+                    <br />
                     you need. It’s your future. Come find it. Manage all your job
                     applications <br /> from start to finish.
                   </p>
