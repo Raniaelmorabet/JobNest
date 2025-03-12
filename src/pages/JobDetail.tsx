@@ -6,15 +6,35 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ApplicationForm } from "../components/ApplicationForm";
 import { Loader } from "../components/ui/loader";
-import ReactMarkdown from "react-markdown";
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  picture: string;
+  type: string[];
+  wage: string;
+  no_of_applicants: number;
+  posted_at: string;
+  category: string;
+  responsibilities?: string[];
+  required_skills?: string[];
+  experience_level: string;
+  location: string;
+}
+
+interface JobDetailParams {
+  id: string;
+}
 
 export default function JobDetail() {
-  const { id } = useParams(); // Get the job ID from the URL
-  const [selectedJob, setSelectedJob] = useState(null); // State for the selected job
-  const [relatedJobs, setRelatedJobs] = useState([]); // State for related jobs in the same category
-  const [showApplicationForm, setShowApplicationForm] = useState(false); // State for the application form
-  const [loading, setLoading] = useState(true); // State for loading status
-  const [error, setError] = useState(null); // State for error handling
+  const { id } = useParams<JobDetailParams>();
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [relatedJobs, setRelatedJobs] = useState<Job[]>([]);
+  const [showApplicationForm, setShowApplicationForm] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch job details from the API
   useEffect(() => {
@@ -26,7 +46,7 @@ export default function JobDetail() {
         if (!response.ok) {
           throw new Error("Failed to fetch job details");
         }
-        const data = await response.json();
+        const data: Job = await response.json();
         setSelectedJob(data); // Set the fetched job data
 
         // Fetch related jobs in the same category
@@ -37,25 +57,24 @@ export default function JobDetail() {
         if (!relatedJobsResponse.ok) {
           throw new Error("Failed to fetch related jobs");
         }
-        const relatedJobsData = await relatedJobsResponse.json();
-        setRelatedJobs(relatedJobsData.results); // Set the fetched related jobs
+        const relatedJobsData: { results: Job[] } = await relatedJobsResponse.json();
+        setRelatedJobs(relatedJobsData.results);
       } catch (error) {
-        setError(error.message); // Set error message
+        setError(error.message);
       } finally {
-        setLoading(false); // Set loading to false
+        setLoading(false);
       }
     };
 
     fetchJobDetails();
   }, [id]);
 
-  // Filter out the main job from related jobs
   const filteredRelatedJobs = relatedJobs.filter(
       (job) => job.id.toString() !== id
   );
 
   // Function to extract specific sections from the description
-  const extractSections = (description) => {
+  const extractSections = (description: string) => {
     const sections = {
       description: "",
       responsibilities: "",
@@ -66,7 +85,7 @@ export default function JobDetail() {
     // Split the description into lines
     const lines = description.split("\r\n");
 
-    let currentSection = null;
+    let currentSection: keyof typeof sections | null = null;
 
     lines.forEach((line) => {
       if (line.startsWith("## Job Description")) {
@@ -117,7 +136,6 @@ export default function JobDetail() {
   // Extract the required sections from the description
   const { description, responsibilities, keySkills, howToApply } =
       extractSections(selectedJob.description);
-
 
   return (
       <div className="min-h-screen bg-gray-50 pt-24">
