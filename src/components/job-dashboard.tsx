@@ -1,6 +1,5 @@
 import { Plus, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { JobCard } from "@/components/job-card";
@@ -9,7 +8,7 @@ import { SuccessToast } from "@/components/success-toast";
 import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog";
 import { Pagination } from "./Pagination";
 import { useNavigate } from "react-router-dom";
-import { Loader } from "./ui/loader"; // Import the Loader component
+import { Loader } from "./ui/loader";
 import React from "react";
 
 export function JobDashboard() {
@@ -26,9 +25,9 @@ export function JobDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
-  const [categories, setCategories] = useState([]); // State for categories
-  const [industries, setIndustries] = useState([]); // State for industries
-  const [loading, setLoading] = useState(true); // State for loading status
+  const [categories, setCategories] = useState([]);
+  const [industries, setIndustries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   // Fetch jobs from the API
@@ -80,7 +79,7 @@ export function JobDashboard() {
       }
 
       const data = await response.json();
-      setCategories(data.results); // Assuming the API returns an array of categories
+      setCategories(data.results);
     } catch (err) {
       setError(err.message);
     }
@@ -106,7 +105,7 @@ export function JobDashboard() {
       }
 
       const data = await response.json();
-      setIndustries(data.results); // Assuming the API returns an array of industries
+      setIndustries(data.results);
     } catch (err) {
       setError(err.message);
     }
