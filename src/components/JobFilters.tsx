@@ -10,22 +10,48 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 
-// Experience levels (static)
+// Define the shape of a category object
+interface Category {
+  id: string;
+  name: string;
+}
+
+// Define the shape of the filters object
+interface Filters {
+  category?: string | null;
+  location?: string | null;
+  experienceLevel?: string | null;
+}
+
+// Define the props for the JobFilters component
+interface JobFiltersProps {
+  filters: Filters;
+  onFilterChange: (newFilters: Filters) => void;
+  locations: string[];
+  categories: Category[];
+  clearFilters: () => void;
+}
+
+// Experience levels
 const experienceLevels = ["Entry Level", "Mid Level", "Senior"];
 
-export function JobFilters({ filters, onFilterChange, locations, categories }) {
-  const [showMoreCategories, setShowMoreCategories] = useState(false);
-  const [showMoreLocations, setShowMoreLocations] = useState(false);
+export function JobFilters({
+                             filters,
+                             onFilterChange,
+                             locations,
+                             categories,
+                             clearFilters,
+                           }: JobFiltersProps): JSX.Element {
+  const [showMoreCategories, setShowMoreCategories] = useState<boolean>(false);
+  const [showMoreLocations, setShowMoreLocations] = useState<boolean>(false);
 
   // Handle checkbox changes
-  const handleCheckboxChange = (filterType, value) => {
-    console.log(`Filter Type: ${filterType}, Value: ${value}`); // Debugging
+  const handleCheckboxChange = (filterType: keyof Filters, value: string | null): void => {
     onFilterChange({ ...filters, [filterType]: value });
   };
-  
 
   // Function to render categories with "Show More" logic
-  const renderCategories = () => {
+  const renderCategories = (): JSX.Element => {
     const visibleCategories = showMoreCategories ? categories : categories.slice(0, 3);
     return (
         <>
@@ -57,7 +83,7 @@ export function JobFilters({ filters, onFilterChange, locations, categories }) {
   };
 
   // Function to render locations with "Show More" logic
-  const renderLocations = () => {
+  const renderLocations = (): JSX.Element => {
     const visibleLocations = showMoreLocations ? locations : locations.slice(0, 3);
     return (
         <>
