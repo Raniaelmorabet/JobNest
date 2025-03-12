@@ -2,23 +2,10 @@ import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 
@@ -28,12 +15,12 @@ const defaultJobForm = {
   company: "",
   location: "",
   wage: 0,
-  type: [""], // Initialize with one empty type
+  type: [""],
   experience_level: "entry",
   description: "",
   responsibilities: [""],
   required_skills: [""],
-  picture: "", // Ensure picture is initialized as an empty string
+  picture: "",
   industry: "",
   category: "",
   is_active: true,
@@ -53,10 +40,9 @@ export function JobForm({
 }) {
   const [jobForm, setJobForm] = useState(defaultJobForm);
   const [filteredCategories, setFilteredCategories] = useState([]);
-  const [filteredIndustries, setFilteredIndustries] = useState([]); // Industries with categories
-  const [error, setError] = useState(""); // State to hold validation error messages
+  const [filteredIndustries, setFilteredIndustries] = useState([]);
+  const [error, setError] = useState("");
 
-  // Initialize form with job data if in edit mode
   useEffect(() => {
     if (job && mode === "edit") {
       setJobForm({
@@ -69,9 +55,9 @@ export function JobForm({
         description: job.description.replace(/^## Job Description\s*\r?\n/, ""),
         responsibilities: [...job.responsibilities],
         required_skills: [...job.required_skills],
-        picture: job.picture || "", // Ensure picture is set correctly
-        industry: job.industry?.id || "", // Use industry ID
-        category: job.category?.id || "", // Use category ID
+        picture: job.picture || "",
+        industry: job.industry?.id || "",
+        category: job.category?.id || "",
         is_active: job.is_active,
       });
 
@@ -109,7 +95,7 @@ export function JobForm({
       setFilteredCategories(filtered);
       setJobForm((prev) => ({
         ...prev,
-        category: "", // Reset category when industry changes
+        category: "",
       }));
     }
   };
@@ -142,7 +128,7 @@ export function JobForm({
     newArray.splice(index, 1);
     setJobForm({
       ...jobForm,
-      [field]: newArray.length ? newArray : [""], // Always keep at least one empty input
+      [field]: newArray.length ? newArray : [""],
     });
   };
 
@@ -163,7 +149,7 @@ export function JobForm({
       company: jobForm.company.trim(),
       location: jobForm.location.trim(),
       wage: jobForm.wage ? Number.parseInt(jobForm.wage) : null,
-      type: jobForm.type.filter((t) => t.trim() !== ""), // Filter out empty types
+      type: jobForm.type.filter((t) => t.trim() !== ""),
       experience_level: jobForm.experience_level || null,
       description: jobForm.description.trim(),
       is_active: jobForm.is_active,
@@ -171,7 +157,7 @@ export function JobForm({
       required_skills: jobForm.required_skills.filter((s) => s.trim() !== ""),
       industry: jobForm.industry || null,
       category: jobForm.category || null,
-      picture: jobForm.picture.trim(), // Ensure picture is trimmed and sent correctly
+      picture: jobForm.picture.trim(),
     };
 
     // Validate required fields
@@ -195,7 +181,7 @@ export function JobForm({
       return;
     }
 
-    // Validate title, company, and location length (1-255 characters)
+    // Validate title, company, and location length
     if (jobData.title.length > 255) {
       setError("Title must be 255 characters or less.");
       return;
