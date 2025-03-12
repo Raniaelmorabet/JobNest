@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import Intro from "../../assets/Intro/JobNest.mp4"
 function Preloader({ className }) {
     return (
