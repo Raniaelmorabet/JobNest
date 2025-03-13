@@ -36,38 +36,79 @@ export default function AuthUI() {
   const [loginErrors, setLoginErrors] = useState({});
 
   // State for industries
-  const [industries, setIndustries] = useState([]);
+  const [industries, setIndustries] = useState([
+    {
+      id: "753b8fba-b748-4ffd-acd7-3a4443258079",
+      name: "industry"
+    },
+    {
+      id: "89f772fd-19cc-4cd8-a593-4d58e80726bb",
+      name: "Human Resources"
+    },
+    {
+      id: "3aac0001-6c7f-48e3-9abd-04d42927b5a1",
+      name: "Transportation & Logistics"
+    },
+    {
+      id: "bb3ec10b-e8e6-410e-a70e-6dd4311f1c62",
+      name: "Media & Entertainment"
+    },
+    {
+      id: "829d0dde-221a-4ec0-a6fb-0b05d463cf49",
+      name: "Sales & Marketing"
+    },
+    {
+      id: "6dcca264-ad4d-48b3-b7f5-5fc744027837",
+      name: "Education & Training"
+    },
+    {
+      id: "4d84ca67-e27e-452f-bdce-c9d6e6c594fb",
+      name: "Engineering & Manufacturing"
+    },
+    {
+      id: "5e63af74-4fa7-48f8-96e2-6208bb4ed215",
+      name: "Finance & Banking"
+    },
+    {
+      id: "616b27c3-2b17-4f8b-baa2-585d05d88b27",
+      name: "Healthcare & Medical"
+    },
+    {
+      id: "54fa8578-3368-4bd4-93ab-f550213f3525",
+      name: "Information Technology (IT)"
+    }
+  ]);
   const [error, setError] = useState("");
 
   // Fetch industries on component mount
-  useEffect(() => {
-    fetchIndustries();
-  }, []);
+  // useEffect(() => {
+  //   fetchIndustries();
+  // }, []);
 
-  const fetchIndustries = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(
-          "https://job-board-platform.onrender.com/api/industry/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-      );
+  // const fetchIndustries = async () => {
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await fetch(
+  //         "https://job-board-platform.onrender.com/api/industry/",
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //     );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch industries");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch industries");
+  //     }
 
-      const data = await response.json();
-      setIndustries(data.results); // Assuming the API returns an array of industries
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  //     const data = await response.json();
+  //     setIndustries(); // Assuming the API returns an array of industries
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // };
 
   const handleTabChange = (tab) => {
     if (tab === activeTab || isAnimating) return;
@@ -127,9 +168,7 @@ export default function AuthUI() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Signup failed");
-        console.log(response)
       }
-      console.log(response)
       const data = await response.json();
       handleTabChange("login");
       // Handle successful signup (e.g., redirect to dashboard)
@@ -162,7 +201,6 @@ export default function AuthUI() {
           password: loginData.password,
         }),
       });
-      console.log(response)
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
