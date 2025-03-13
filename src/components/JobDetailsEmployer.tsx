@@ -147,13 +147,11 @@ export default function JobDetailsEmployer() {
             <img
                 src={
                   job?.picture
-                      ? job.picture.replace('image/upload/', '').includes('.')
-                          ? job.picture.replace('image/upload/', '')
-                          : `${job.picture.replace('image/upload/', '')}.png`
+                      ? `http://res.cloudinary.com/temz-cloudinary/${job.picture}`
                       : "/placeholder.svg"
                 }
                 alt={job?.company}
-                className="h-16 w-16 rounded-lg object-cover"
+                className="size-14 rounded-lg object-cover"
             />
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-2">{job?.title}</h2>
