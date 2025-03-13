@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import DashboardPage from "./pages/DashboardPage";
 import JobDetailsEmployer from "./components/JobDetailsEmployer";
 import Error from "@/components/Error";
+import React from "react";
 
 function App(): JSX.Element {
     const location = useLocation();
@@ -42,18 +43,30 @@ function App(): JSX.Element {
         return <>{children}</>;
     };
 
+    const ProtectedUser = ({
+                               children,
+                           }: {
+        children: ReactNode;
+    }): JSX.Element => {
+        if (!user || JSON.parse(user).role != "user") {
+            return <Navigate to="/dashboard" replace />;
+        }
+        return <>{children}</>;
+    };
+
     return (
         <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow">
                 <Routes>
                     <Route path="/auth" element={<Auth />} />
-                    <Route path="*" element={<Error />} />
                     <Route
                         path="/"
                         element={
                             <ProtectedRoute>
-                                <Home />
+                                <ProtectedUser>
+                                    <Home />
+                                </ProtectedUser>
                             </ProtectedRoute>
                         }
                     />
@@ -85,6 +98,7 @@ function App(): JSX.Element {
                             </ProtectedRoute>
                         }
                     />
+                    <Route path="*" element={<Error />} />
                 </Routes>
             </main>
             {location.pathname === "/auth" ? "" : <Footer />}
