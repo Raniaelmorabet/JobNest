@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import React from "react";
 
 export function JobCard({ job, onJobClick, onUpdateJob, onDeleteJob }) {
+  console.log(job);
+
   return (
       <Card
           className="flex flex-col h-full p-6 hover:shadow-lg transition-shadow cursor-pointer"
@@ -16,13 +18,11 @@ export function JobCard({ job, onJobClick, onUpdateJob, onDeleteJob }) {
               <img
                   src={
                     job?.picture
-                        ? job.picture.replace('image/upload/', '').includes('.')
-                            ? job.picture.replace('image/upload/', '')
-                            : `${job.picture.replace('image/upload/', '')}.png`
+                        ? `http://res.cloudinary.com/temz-cloudinary/${job.picture}`
                         : "/placeholder.svg"
                   }
                   alt={job?.company}
-                  className="h-16 w-16 rounded-lg object-cover"
+                  className="size-14 rounded-lg object-cover"
               />
               <div>
                 <h3 className="font-semibold text-lg">
