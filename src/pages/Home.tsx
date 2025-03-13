@@ -32,8 +32,8 @@ export default function Home(): JSX.Element {
         setTimeout(() => {
           setIsLoaded(true);
           localStorage.setItem("showIntro", "false");
-        }, 9000);
-      }, 1000);
+        }, 2000);
+      }, 9000);
       return () => clearTimeout(timer);
     } else {
       setIsLoaded(true);
