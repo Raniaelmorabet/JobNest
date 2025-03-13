@@ -36,14 +36,14 @@ export function JobDashboard() {
     setLoading(true); // Start loading
     try {
       const response = await fetch(
-        `https://job-board-platform.onrender.com/api/job/list-total-jobs/?search=${searchTerm}&page=${page}&page_size=${pageSize}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          `https://job-board-platform.onrender.com/api/job/list-total-jobs/?search=${searchTerm}&page=${page}&page_size=${pageSize}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
 
       if (!response.ok) {
@@ -64,14 +64,14 @@ export function JobDashboard() {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        "https://job-board-platform.onrender.com/api/category/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          "https://job-board-platform.onrender.com/api/category/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
 
       if (!response.ok) {
@@ -90,14 +90,14 @@ export function JobDashboard() {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        "https://job-board-platform.onrender.com/api/industry/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          "https://job-board-platform.onrender.com/api/industry/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
 
       if (!response.ok) {
@@ -129,14 +129,14 @@ export function JobDashboard() {
 
       try {
         const response = await fetch(
-          "https://job-board-platform.onrender.com/api/job/total-applicants/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+            "https://job-board-platform.onrender.com/api/job/total-applicants/",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
         );
 
         if (!response.ok) {
@@ -160,14 +160,14 @@ export function JobDashboard() {
 
       try {
         const response = await fetch(
-          "https://job-board-platform.onrender.com/api/job/total-jobs/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+            "https://job-board-platform.onrender.com/api/job/total-jobs/",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
         );
 
         if (!response.ok) {
@@ -197,14 +197,14 @@ export function JobDashboard() {
 
     try {
       const response = await fetch(
-        `https://job-board-platform.onrender.com/api/job/${jobToDelete.id}/`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          `https://job-board-platform.onrender.com/api/job/${jobToDelete.id}/`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
 
       if (!response.ok) {
@@ -237,23 +237,46 @@ export function JobDashboard() {
   };
 
   // Handle saving a job (create or update)
+// JobDashboard.tsx
   const handleSaveJob = async (jobData) => {
     const token = localStorage.getItem("token");
 
     try {
       const url = editingJob
-        ? `https://job-board-platform.onrender.com/api/job/${editingJob.id}/` 
-        : "https://job-board-platform.onrender.com/api/job/"; 
+          ? `https://job-board-platform.onrender.com/api/job/${editingJob.id}/`
+          : "https://job-board-platform.onrender.com/api/job/";
 
       const method = editingJob ? "PUT" : "POST";
+
+      const formData = new FormData();
+
+      // Append job details
+      formData.append("title", jobData.title);
+      formData.append("company", jobData.company);
+      formData.append("location", jobData.location);
+      formData.append("wage", jobData.wage ?? "");
+      formData.append("experience_level", jobData.experience_level ?? "");
+      formData.append("description", jobData.description);
+      formData.append("is_active", jobData.is_active);
+      formData.append("industry", jobData.industry ?? "");
+      formData.append("category", jobData.category ?? "");
+
+      // Convert arrays to JSON strings
+      formData.append("type", JSON.stringify(jobData.type));
+      formData.append("responsibilities", JSON.stringify(jobData.responsibilities));
+      formData.append("required_skills", JSON.stringify(jobData.required_skills));
+
+      // Append image file if provided
+      if (jobData.picture instanceof File) {
+        formData.append("picture", jobData.picture);
+      }
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(jobData),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -264,18 +287,24 @@ export function JobDashboard() {
 
       const savedJob = await response.json();
 
-      // Refetch jobs after saving
-      fetchJobs();
-
-      // Close the modal and show success notification
+      // Update jobs state
+      if (editingJob) {
+        setJobs(jobs.map(job => job.id === savedJob.id ? savedJob : job));
+      } else {
+        setJobs(prevJobs => [savedJob, ...prevJobs]);
+        setTotalJobs(prev => (prev || 0) + 1);
+        setPage(1); // Reset to first page for new entries
+      }
+      window.location.reload();
+      // Close modals and show success
       setIsEditModalOpen(false);
       setIsAddJobModalOpen(false);
       setNotification({
         message: editingJob ? "Job updated successfully" : "New job created successfully",
         type: "success",
       });
-      editingJob ? "" : setTotalJobs(totalJobs + 1);
       setTimeout(() => setNotification({ message: "", type: "" }), 3000);
+
     } catch (err) {
       setError(err.message);
       setNotification({
@@ -307,87 +336,87 @@ export function JobDashboard() {
   // Render the Loader while fetching jobs
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader size="lg" /> {/* Render the Loader component */}
-      </div>
+        <div className="flex justify-center items-center min-h-screen">
+          <Loader size="lg" /> {/* Render the Loader component */}
+        </div>
     );
   }
 
   return (
-    <div className="container mx-auto pt-20 px-5 md:pb-20 mb-5 relative min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Employer Dashboard</h1>
-      </div>
+      <div className="container mx-auto pt-20 px-5 md:pb-20 mb-5 relative min-h-screen">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Employer Dashboard</h1>
+        </div>
 
-      <Card className="mb-6 bg-black text-white p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm mb-1">Total Jobs</div>
-            <div className="text-3xl font-bold">{totalJobs}</div>
-            <div className="flex items-center text-sm mt-1 text-green-400">
-              <User className="h-4 w-4 mr-1" />
-              {totalApplicants} Total Applicants
+        <Card className="mb-6 bg-black text-white p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm mb-1">Total Jobs</div>
+              <div className="text-3xl font-bold">{totalJobs}</div>
+              <div className="flex items-center text-sm mt-1 text-green-400">
+                <User className="h-4 w-4 mr-1" />
+                {totalApplicants} Total Applicants
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                  size="sm"
+                  variant="secondary"
+                  className="bg-green-400 hover:bg-green-400 text-black"
+                  onClick={handleAddNewJob}
+              >
+                <Plus className="h-4 w-4 mr-1" /> Add New Job
+              </Button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="secondary"
-              className="bg-green-400 hover:bg-green-400 text-black"
-              onClick={handleAddNewJob}
-            >
-              <Plus className="h-4 w-4 mr-1" /> Add New Job
-            </Button>
-          </div>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {jobs.map((job) => (
+              <JobCard
+                  key={job.id}
+                  job={job}
+                  onJobClick={handleJobClick}
+                  onUpdateJob={handleUpdateJob}
+                  onDeleteJob={handleConfirmDelete}
+              />
+          ))}
         </div>
-      </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            onJobClick={handleJobClick}
-            onUpdateJob={handleUpdateJob}
-            onDeleteJob={handleConfirmDelete}
-          />
-        ))}
+        {/* Pagination */}
+        <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+        />
+
+        {/* Job Form Modals */}
+        <JobForm
+            isOpen={isEditModalOpen || isAddJobModalOpen}
+            onOpenChange={(isOpen) => {
+              if (editingJob) {
+                setIsEditModalOpen(isOpen);
+              } else {
+                setIsAddJobModalOpen(isOpen);
+              }
+            }}
+            job={editingJob}
+            onSave={handleSaveJob}
+            mode={editingJob ? "edit" : "add"}
+            categories={categories}
+            industries={industries}
+        />
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteConfirmationDialog
+            isOpen={isDeleteConfirmOpen}
+            onOpenChange={setIsDeleteConfirmOpen}
+            jobTitle={jobToDelete?.title}
+            onConfirmDelete={handleDeleteJob}
+        />
+
+        {/* Success/Error Notifications */}
+        {notification.message && <SuccessToast message={notification.message} type={notification.type} />}
       </div>
-
-      {/* Pagination */}
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-
-      {/* Job Form Modals */}
-      <JobForm
-        isOpen={isEditModalOpen || isAddJobModalOpen}
-        onOpenChange={(isOpen) => {
-          if (editingJob) {
-            setIsEditModalOpen(isOpen);
-          } else {
-            setIsAddJobModalOpen(isOpen);
-          }
-        }}
-        job={editingJob}
-        onSave={handleSaveJob}
-        mode={editingJob ? "edit" : "add"}
-        categories={categories} 
-        industries={industries}
-      />
-
-      {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
-        isOpen={isDeleteConfirmOpen}
-        onOpenChange={setIsDeleteConfirmOpen}
-        jobTitle={jobToDelete?.title}
-        onConfirmDelete={handleDeleteJob}
-      />
-
-      {/* Success/Error Notifications */}
-      {notification.message && <SuccessToast message={notification.message} type={notification.type} />}
-    </div>
   );
 }
